@@ -18,6 +18,8 @@ jobs:
       - name: Fetch sources into actions.
         # Downloads action code from the marketplace and runs it.
         uses: actions/checkout@v3
+      - name: Install requirements.
+        run: python3 install -r requirements.txt
       - name: Run the code.
         ## Reference your environment variables
         run: python3  ./page_data.py
