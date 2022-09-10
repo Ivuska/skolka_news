@@ -1,0 +1,33 @@
+name: Check articles every day at the end of the day
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  job:
+    runs-on: ubuntu-latest 
+    env:
+      ## Environment variables
+      SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+      RECEIVER_EMAILS: ${{ secrets.RECEIVER_EMAILS }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      SERVER: ${{ secrets.SERVER }}
+      PORT: ${{ secrets.PORT }} 
+    steps:
+      - name: Fetch sources into actions.
+        # Downloads action code from the marketplace and runs it.
+        uses: actions/checkout@v3
+      - name: Run the code.
+        ## Reference your environment variables
+        run: python3  ./page_data.py
+      - name: Add, commit and push the changed id.txt file to repo.
+        uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+        with:
+          # The arguments for the `git add` command (see the paragraph below for more info)
+          # Default: '.'
+          add: 'id.txt'
+          default_author: github_actions
+          # The message for the commit.
+          # Default: 'Commit from GitHub Actions (name of the workflow)'
+          message: 'Updated id of the last article.'
