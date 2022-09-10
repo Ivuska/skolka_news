@@ -1,50 +1,84 @@
-import smtplib, ssl
-from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import make_msgid
+import smtplib
 import os
 
-def send_me_email(header, link, content):
-    sender_email = os.environ.get('SENDER_EMAIL')
-    if not sender_email:
-        password = input('Type sender address:')
-    receiver_email = os.environ.get('RECEIVER_EMAIL')
-    if not receiver_email:
-        password = input('Type receiver address:')
-    password = os.environ.get('PASSWORD')
-    if not password:
-        password = input('Type your password:')
+sender_email =  os.environ.get('SENDER_EMAIL')
+# Email addresses must be separated by comma then it works for multiple addresses.
+receiver_emails = os.environ.get('RECEIVER_EMAILS')
+password = os.environ.get('PASSWORD')
+server_domain = os.environ.get('SERVER')
+# All environment variables are strings by default so I need to convert it to integer.
+port = int(os.environ.get('PORT'))
 
-    message = MIMEMultipart("alternative")
-    message["Subject"] = 'Novinky ze školky'
-    message["From"] = sender_email
-    message["To"] = receiver_email
-
-    # Create the plain-text and HTML version of your message
-    text = f'Ahoj, na strankách školky je nový článek {header}. Víc najdeš na {link}.'
+def send_email_with_content(header, link, content):
+    # Create the HTML version of your message
     html = f"""\
     <html>
     <body>
-        <p>Ahoj, na strankách školky je nový článek <strong>{header}</strong> Víc najdeš na <a href="{link}"><strong>TADY</strong></a>.</p>
-        {content}
+        <p>Ahoj, 
+        <br>
+        na strankách školky je nový článek => <strong>"{ header }"</strong>.</p> 
+
+        <br>
+        <p>
+        { content }
+        </p>
+
+        <br>
+        <p>
+        <a href="{ link }">Článek na webu</a>
+        </p>
     </body>
     </html>
     """
+    send_email(html)
 
-    # Turn these into plain/html MIMEText objects
-    part1 = MIMEText(text, "plain")
-    part2 = MIMEText(html, "html")
+def send_email_with_content_to_download(header, link, content):
+    # Create the HTML version of your message
+    html = f"""\
+    <html>
+    <body>
+        <p>Ahoj, 
+        <br>
+        na strankách školky je nový článek => <strong>"{ header }"</strong>.
+        </p> 
 
-    # Add HTML/plain-text parts to MIMEMultipart message
-    # The email client will try to render the last part first
+        <br>
+        <p>
+        <strong>{ content }</strong>
+        </p>
+
+        <br>
+        <p>
+        <a href="{ link }">Článek na webu</a>
+        </p>
+    </body>
+    </html>
+    """
+    send_email(html)
+
+def send_email(html):
+    message = MIMEMultipart()
+    message["Subject"] = 'Novinky ze školky'
+    message["From"] = sender_email
+    message["To"] = receiver_emails
+    # Every message must have its own message id. This id is not stored just in the message.
+    # This id is an unique identifier of the message.
+    message["Message-Id"] = make_msgid()
+
+    # Turn into html MIMEText objects
+    part1 = MIMEText(html, "html")
     message.attach(part1)
-    message.attach(part2)
 
     # Create secure connection with server and send email
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    with smtplib.SMTP(server_domain, port) as server:
         server.starttls() 
         server.login(sender_email, password)
         server.sendmail(
-            sender_email, receiver_email, message.as_string()
+            # I need to create a list of receiver email addresses.
+            sender_email, receiver_emails.split(","), message.as_string()
         )
 
     print("Odeslano")
