@@ -43,9 +43,9 @@ def get_new_articles():
     #link_to_menu = article[]
     article_id = int(url[-4:])
 
-    if article_id >= 4140:
-      #print(header)
-      #print(article_id)
+    if article_id > old_id:
+      print(header)
+      print(article_id)
 
       if 'Jídelníček' in header or 'Jídelní lístek' in header:
         send_email_with_content_to_download(header, url, content)
