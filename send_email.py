@@ -9,7 +9,8 @@ sender_email =  os.environ.get('SENDER_EMAIL')
 receiver_emails = os.environ.get('RECEIVER_EMAILS')
 password = os.environ.get('PASSWORD')
 server_domain = os.environ.get('SERVER')
-# All environment variables are strings by default so I need to convert it to integer.
+# All environment variables are strings by default so I need to convert it to integer local testing BUT not for run in GH Actions!
+# port = int(os.environ.get('PORT'))
 port = os.environ.get('PORT')
 
 def send_email_with_content(header, link, content):
