@@ -14,6 +14,7 @@ jobs:
       PASSWORD: ${{ secrets.PASSWORD }}
       SERVER: ${{ secrets.SERVER }}
       PORT: ${{ secrets.PORT }} 
+      WORKER_URL: ${{ secrets.WORKER_URL }}
     steps:
       - name: Fetch sources into actions.
         # Downloads action code from the marketplace and runs it.
