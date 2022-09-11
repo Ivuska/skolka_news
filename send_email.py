@@ -9,12 +9,18 @@ import requests
 from email import encoders
 
 sender_email =  os.environ.get('SENDER_EMAIL')
-# Email addresses must be separated by comma then it works for multiple addresses.
-receiver_emails = os.environ.get('RECEIVER_EMAILS')
 password = os.environ.get('PASSWORD')
 server_domain = os.environ.get('SERVER')
 # All environment variables are strings by default so I need to convert it to integer.
 port = int(os.environ.get('PORT'))
+
+worker_url = os.environ.get('WORKER_URL')
+
+def get_receivers_emails():
+    response = requests.get(worker_url + '/email')
+    receiver_emails = response.json()
+    # returns list of strings
+    return receiver_emails
 
 def send_email_with_content(header, link, content):
     # Create the HTML version of your message
@@ -81,29 +87,30 @@ def send_email_with_content_to_download(header, link, content):
     """
     send_email(html, attachment)
 
-def send_email(html, attachment=None):
-    message = MIMEMultipart()
-    message["Subject"] = 'Novinky ze školky'
-    message["From"] = sender_email
-    message["To"] = receiver_emails
-    # Every message must have its own message id. This id is not stored just in the message.
-    # This id is an unique identifier of the message.
-    message["Message-Id"] = make_msgid()
+def send_email(html, attachment=None, ):
+    receiver_emails = get_receivers_emails()
+    for email in receiver_emails:
+        message = MIMEMultipart()
+        message["Subject"] = 'Novinky ze školky'
+        message["From"] = sender_email
+        message["To"] = email
+        # Every message must have its own message id. This id is not stored just in the message.
+        # This id is an unique identifier of the message.
+        message["Message-Id"] = make_msgid()
 
-    # Turn into html MIMEText objects
-    part1 = MIMEText(html, "html")
+        # Turn into html MIMEText objects
+        part1 = MIMEText(html, "html")
 
-    message.attach(part1)
-    if attachment:
-        message.attach(attachment)
+        message.attach(part1)
+        if attachment:
+            message.attach(attachment)
 
-    # Create secure connection with server and send email
-    with smtplib.SMTP(server_domain, port) as server:
-        server.starttls() 
-        server.login(sender_email, password)
-        server.sendmail(
-            # I need to create a list of receiver email addresses.
-            sender_email, receiver_emails.split(","), message.as_string()
-        )
+        # Create secure connection with server and send email
+        with smtplib.SMTP(server_domain, port) as server:
+            server.starttls() 
+            server.login(sender_email, password)
+            server.sendmail(
+                sender_email, email, message.as_string()
+            )
 
-    print("Odeslano")
+        print(f"Odeslano na { email }.")
