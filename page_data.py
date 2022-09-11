@@ -1,5 +1,7 @@
 import requests
 import xmltodict
+import json
+import os
 
 from send_email import *
 
@@ -7,15 +9,16 @@ from send_email import *
 response = requests.get('https://www.msvinicna.cz/?feed=rss2')
 dict_data = xmltodict.parse(response.content)
 
-# We store the id of the last article in id.txt.
+worker_url = os.environ.get('WORKER_URL')
+
 def get_id():
-  with open("id.txt") as id_file:
-      id = int(id_file.read())
-      return id
+  response = requests.get(worker_url + '/last_id' )
+  last_id = response.json()['last_id']
+  print(f'Received last id is {last_id}.')
+  return last_id
 
 def set_new_id(id):
-  with open("id.txt","w") as id_file:
-      id_file.write(str(id))
+  requests.post(worker_url + '/last_id', json={'last_id':id})
 
 def get_articles_from_rss(dict_data):
   rss = dict_data['rss']
