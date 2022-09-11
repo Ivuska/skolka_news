@@ -42,7 +42,7 @@ def get_new_articles():
     content = article[2]
     article_id = int(url[-4:])
 
-    if article_id > old_id:
+    if article_id > 4150:
       print(header)
       print(article_id)
 
@@ -55,4 +55,3 @@ def get_new_articles():
     
 if __name__ == '__main__':
   get_new_articles()
-  

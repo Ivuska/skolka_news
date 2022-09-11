@@ -1,9 +1,11 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import make_msgid
+from urllib import request
 from bs4 import BeautifulSoup
 import smtplib
 import os
+import requests
 
 sender_email =  os.environ.get('SENDER_EMAIL')
 # Email addresses must be separated by comma then it works for multiple addresses.
@@ -43,6 +45,8 @@ def send_email_with_content_to_download(header, link, content):
     # There are two links in the article, both with the link to download the menu, so I can scrape the first one and do not specify it more.
     menu_link = soup.find("a").get("href")
     print(menu_link)
+    menu_file = requests.get(menu_link)
+    open("jidelnicek.docx", "wb").write(menu_file.content)
     html = f"""\
     <html>
     <body>
