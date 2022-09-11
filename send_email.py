@@ -1,6 +1,7 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import make_msgid
+from bs4 import BeautifulSoup
 import smtplib
 import os
 
@@ -37,6 +38,11 @@ def send_email_with_content(header, link, content):
 
 def send_email_with_content_to_download(header, link, content):
     # Create the HTML version of your message
+    html_content = content
+    soup = BeautifulSoup(html_content, 'html.parser')
+    # There are two links in the article, both with the link to download the menu, so I can scrape the first one and do not specify it more.
+    menu_link = soup.find("a").get("href")
+    print(menu_link)
     html = f"""\
     <html>
     <body>
@@ -47,7 +53,7 @@ def send_email_with_content_to_download(header, link, content):
 
         <br>
         <p>
-        <strong>{ content }</strong>
+        <a href="{ menu_link }"><strong>STÁHNOUT JÍDELNÍČEK</strong></a>
         </p>
 
         <br>

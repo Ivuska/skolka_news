@@ -40,7 +40,6 @@ def get_new_articles():
     header = article[0]
     url = article[1]
     content = article[2]
-    #link_to_menu = article[]
     article_id = int(url[-4:])
 
     if article_id > old_id:
@@ -56,3 +55,4 @@ def get_new_articles():
     
 if __name__ == '__main__':
   get_new_articles()
+  
