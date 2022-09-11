@@ -1,11 +1,12 @@
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.utils import make_msgid
-from urllib import request
 from bs4 import BeautifulSoup
 import smtplib
 import os
 import requests
+from email import encoders
 
 sender_email =  os.environ.get('SENDER_EMAIL')
 # Email addresses must be separated by comma then it works for multiple addresses.
@@ -46,7 +47,23 @@ def send_email_with_content_to_download(header, link, content):
     menu_link = soup.find("a").get("href")
     print(menu_link)
     menu_file = requests.get(menu_link)
-    open("jidelnicek.docx", "wb").write(menu_file.content)
+
+    # Add file as application/octet-stream
+    # Email client can usually download this automatically as attachment
+    attachment = MIMEBase("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
+    attachment.set_payload(menu_file.content)
+
+    # Encode file in ASCII characters to send by email    
+    encoders.encode_base64(attachment)
+
+    file_name = menu_link.split('/')[-1]
+
+    # Add header as key/value pair to attachment part
+    attachment.add_header(
+        "Content-Disposition", "attachment",
+        filename=file_name
+    )
+
     html = f"""\
     <html>
     <body>
@@ -57,19 +74,14 @@ def send_email_with_content_to_download(header, link, content):
 
         <br>
         <p>
-        <a href="{ menu_link }"><strong>STÁHNOUT JÍDELNÍČEK</strong></a>
-        </p>
-
-        <br>
-        <p>
         <a href="{ link }">Článek na webu</a>
         </p>
     </body>
     </html>
     """
-    send_email(html)
+    send_email(html, attachment)
 
-def send_email(html):
+def send_email(html, attachment=None):
     message = MIMEMultipart()
     message["Subject"] = 'Novinky ze školky'
     message["From"] = sender_email
@@ -80,7 +92,10 @@ def send_email(html):
 
     # Turn into html MIMEText objects
     part1 = MIMEText(html, "html")
+
     message.attach(part1)
+    if attachment:
+        message.attach(attachment)
 
     # Create secure connection with server and send email
     with smtplib.SMTP(server_domain, port) as server:
