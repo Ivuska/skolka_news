@@ -7,18 +7,24 @@ import smtplib
 import os
 import requests
 from email import encoders
+import sys
 
 sender_email =  os.environ.get('SENDER_EMAIL')
 password = os.environ.get('PASSWORD')
 server_domain = os.environ.get('SERVER')
+test_receiver_emails = os.environ.get('TEST_RECEIVER_EMAILS')
 # All environment variables are strings by default so I need to convert it to integer.
 port = int(os.environ.get('PORT'))
 
 worker_url = os.environ.get('WORKER_URL')
 
 def get_receivers_emails():
-    response = requests.get(worker_url + '/email')
-    receiver_emails = response.json()
+    if len(sys.argv) > 1 and sys.argv[1] == '--production':
+        response = requests.get(worker_url + '/email')
+        receiver_emails = response.json()
+    else: 
+        receiver_emails = test_receiver_emails.split(',')
+    
     # returns list of strings
     return receiver_emails
 
