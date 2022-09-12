@@ -1,6 +1,5 @@
 import requests
 import xmltodict
-import json
 import os
 
 from send_email import *
