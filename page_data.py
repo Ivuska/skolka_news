@@ -48,7 +48,7 @@ def get_new_articles():
       print(header)
       print(article_id)
 
-      if 'Jídelníček' in header or 'Jídelní lístek' in header:
+      if 'Jídelníček' in header or 'Jídelní lístek' in header or 'Jidelní lístek' in header:
         send_email_with_content_to_download(header, url, content)
       else:
         send_email_with_content(header, url, content)
