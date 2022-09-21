@@ -7,7 +7,11 @@ import smtplib
 import os
 import requests
 from email import encoders
+from dotenv import load_dotenv
 import sys
+
+# Load environment variables from .env file.
+load_dotenv()
 
 sender_email =  os.environ.get('SENDER_EMAIL')
 password = os.environ.get('PASSWORD')
