@@ -50,6 +50,11 @@ def send_email_with_content(header, link, content):
         <p>
         <a href="{ link }">Článek na webu</a>
         </p>
+
+        <footer>
+        Pokud už nechceš články dostávat, stačí se
+        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">odhlásit</a>.
+        </footer>
     </body>
     </html>
     """
@@ -92,6 +97,11 @@ def send_email_with_content_to_download(header, link, content):
         <p>
         <a href="{ link }">Článek na webu</a>
         </p>
+
+        <footer>
+        Pokud už nechceš články dostávat, stačí se
+        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">odhlásit</a>.
+        </footer>
     </body>
     </html>
     """
