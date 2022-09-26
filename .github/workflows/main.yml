@@ -1,4 +1,4 @@
-name: Check articles every day at the end of the day
+name: Check articles every hour of the day
 on:
   schedule:
     - cron: "0 * * * *"
