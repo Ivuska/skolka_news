@@ -37,7 +37,7 @@ def send_email_with_content(header, link, content):
     html = f"""\
     <html>
     <body>
-        <p>Ahoj, 
+        <p>Hezký den, 
         <br>
         na strankách školky je nový článek => <strong>"{ header }"</strong>.</p> 
 
@@ -52,8 +52,8 @@ def send_email_with_content(header, link, content):
         </p>
 
         <footer>
-        Pokud už nechceš články dostávat, stačí se
-        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">odhlásit</a>.
+        Zrušení odběru článků 
+        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">ZDE</a>.
         </footer>
     </body>
     </html>
@@ -88,7 +88,7 @@ def send_email_with_content_to_download(header, link, content):
     html = f"""\
     <html>
     <body>
-        <p>Ahoj, 
+        <p>Hezký den, 
         <br>
         na strankách školky je nový článek => <strong>"{ header }"</strong>.
         </p> 
@@ -99,8 +99,8 @@ def send_email_with_content_to_download(header, link, content):
         </p>
 
         <footer>
-        Pokud už nechceš články dostávat, stačí se
-        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">odhlásit</a>.
+        Zrušení odběru článků
+        <a href="https://novinky-ze-skolky.ifischerova.cz/unsubscribe">ZDE</a>.
         </footer>
     </body>
     </html>
