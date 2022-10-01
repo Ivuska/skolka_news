@@ -12,12 +12,17 @@ worker_url = os.environ.get('WORKER_URL')
 
 def get_id():
   response = requests.get(worker_url + '/last_id', headers={ 'X-Auth-Token': os.environ.get('WORKER_AUTH_TOKEN')} )
+
+  if response.status_code != 200:
+    raise RuntimeError(f'Unexpected error when retireving last id, worker response { response.status_code} {response.text}.')
   last_id = response.json()['last_id']
   print(f'Received last id is {last_id}.')
   return last_id
 
 def set_new_id(id):
-  requests.post(worker_url + '/last_id', json={'last_id':id}, headers={ 'X-Auth-Token': os.environ.get('WORKER_AUTH_TOKEN')})
+  response = requests.post(worker_url + '/last_id', json={'last_id':id}, headers={ 'X-Auth-Token': os.environ.get('WORKER_AUTH_TOKEN')})
+  if response.status_code != 200:
+    raise RuntimeError(f'Unexpected error when updating last id, worker response { response.status_code} {response.text}.')
 
 def get_articles_from_rss(dict_data):
   rss = dict_data['rss']

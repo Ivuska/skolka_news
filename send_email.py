@@ -25,6 +25,8 @@ worker_url = os.environ.get('WORKER_URL')
 def get_receivers_emails():
     if len(sys.argv) > 1 and sys.argv[1] == '--production':
         response = requests.get(worker_url + '/email', headers={ 'X-Auth-Token': os.environ.get('WORKER_AUTH_TOKEN')} )
+        if response.status_code != 200:
+            raise RuntimeError(f'Unexpected error when retrieving email addresses, worker response  { response.status_code} {response.text}.')
         receiver_emails = response.json()
     else: 
         receiver_emails = test_receiver_emails.split(',')
