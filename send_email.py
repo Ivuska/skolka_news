@@ -41,7 +41,7 @@ def send_email_with_content(header, link, content):
     <body>
         <p>Hezký den, 
         <br>
-        na strankách školky je nový článek => <strong>"{ header }"</strong>.</p> 
+        na stránkách školky je nový článek => <strong>"{ header }"</strong>.</p> 
 
         <br>
         <p>
@@ -92,7 +92,7 @@ def send_email_with_content_to_download(header, link, content):
     <body>
         <p>Hezký den, 
         <br>
-        na strankách školky je nový článek => <strong>"{ header }"</strong>.
+        na stránkách školky je nový článek => <strong>"{ header }"</strong>.
         </p> 
 
         <br>
