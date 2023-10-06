@@ -47,8 +47,6 @@ def get_new_articles():
     header = article[0]
     url = article[1]
     content = article[2]
-    # guid = article[3]['#text'].split('=')
-    # article_id = int(guid[1])
     article_id = int(article[3]['#text'].split('=')[1])
     print(article_id)
 
